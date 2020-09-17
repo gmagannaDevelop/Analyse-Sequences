@@ -35,13 +35,17 @@ I chose these tools because they enable many things which I consider desirable i
 
 * **Isolation**: No more cluttering your global Python/R libraries.
 
+### Table of Contents
+* Introduction genomes / sequence databases
+* Sequence Alignment
+* Motif Lookup
+* Phylogenetic trees
+* Annotation
 
 
 
 
-
-
-#### Français
+## Français
 
 Exploration, emploi et développement d'outils dans les langages de 
 programmation Python et R pour l'analyse des séquences. (Cours : M1 
@@ -73,3 +77,6 @@ caractéristiques que je considère désirables dans un projet, notamment:
 * **Isolation**: Pas de saturation de vos librairies globales (niveau 
   système ou utilisateur). Chaque projet est contenu dans un dossier 
   séparé.
+
+
+
