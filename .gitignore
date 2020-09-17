@@ -1,3 +1,12 @@
+
+# Renv :
+renv/
+
+# Docs (if they're ignored they might 
+#       not belong to me or be private )
+Docs/Biopython-tutorial.pdf
+
+
 # History files
 .Rhistory
 .Rapp.history
