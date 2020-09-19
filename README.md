@@ -3,15 +3,11 @@
 This README will contain at least a section in English (main)
 and another in French.
 
-
-
 ### Disclaimer
 
 This project is of academic scope and individually mantained. It may not follow best practices or suit your particular purpose of use. Therefore use it at your own risk.
 
-If it were helpful in any way, please let me know! If you would like to contribute to it, hit me up (**PR wecome!**).
-
-
+If it were helpful in any way, please let me know! If you would like to contribute to it, hit me up (**PR welcome!**).
 
 ## English
 
@@ -36,14 +32,12 @@ I chose these tools because they enable many things which I consider desirable i
 * **Isolation**: No more cluttering your global Python/R libraries.
 
 ### Table of Contents
+
 * Introduction genomes / sequence databases
 * Sequence Alignment
 * Motif Lookup
 * Phylogenetic trees
 * Annotation
-
-
-
 
 ## Français
 
@@ -77,6 +71,3 @@ caractéristiques que je considère désirables dans un projet, notamment:
 * **Isolation**: Pas de saturation de vos librairies globales (niveau 
   système ou utilisateur). Chaque projet est contenu dans un dossier 
   séparé.
-
-
-
