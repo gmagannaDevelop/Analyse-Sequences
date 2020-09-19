@@ -19,7 +19,9 @@ All of these documents were found to be freely available on the internet. They a
     <td> Entrezpy </td>
     <td> 2020-09-18 </td>
     <td> a Python library to dynamically interact with the NCBI Entrez databases </td>
-    <td> [NCBI](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6821292/) </td>
+    <td> 
+  <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6821292/"> NCBI</a>
+    </td>
   </tr>
 </table>
 
