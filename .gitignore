@@ -5,7 +5,7 @@ renv/
 # Docs (if they're ignored they might 
 #       not belong to me or be private )
 Docs/Biopython-tutorial.pdf
-
+Docs/Entrezpy_article.pdf # Added, no mods.
 
 # History files
 .Rhistory
