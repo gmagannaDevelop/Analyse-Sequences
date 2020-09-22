@@ -15,7 +15,7 @@ Exploration, use and implementation of Python and R tools for DNA sequencing. (C
 
 ### Main components
 
-The repository contains both R and Python code. These are the package / virtual environment managers that I use, along with their respective config file.
+The repository contains both R and Python code. These are the package / virtual environment managers that I use, along with their respective config file. Experimentally  I'm adding support for [Julia](https://julialang.org/).
 
 * Python is managed via [poetry](https://python-poetry.org/).
   
