@@ -39,6 +39,10 @@ I chose these tools because they enable many things which I consider desirable i
 * Phylogenetic trees
 * Annotation
 
+## Extra notes
+
+If you plan accessing any service provided online by the NIH (like BLAST), you should consider [getting an API key](https://support.nlm.nih.gov/knowledgebase/article/KA-03521/en-us). You can find more info [here]([NCBI Insights : New API Keys for the E-utilities](https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/)).
+
 ## Français
 
 Exploration, emploi et développement d'outils dans les langages de 

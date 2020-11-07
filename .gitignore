@@ -1,4 +1,9 @@
 
+# Credentials, including my NCBI API:
+creds
+creds/*
+creds/*.toml
+
 # Renv :
 renv/
 
