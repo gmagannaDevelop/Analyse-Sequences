@@ -12,45 +12,72 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r notice}
+
+# Ce fichier a été créé en utilisant R Markdown, et paquets de BioConductor.
+# Écrit en RStudio, sur le système d'exploitation Pop!_0S 20.10. 
+# La définition des fonctions ci-utilisées est disponible sur
+# https://github.com/gmagannaDevelop/BioGenesis/tree/structurale
+```
+
+
+
+## Exercice 1
+
+__1.1__ Dans quelle partie de la banque se trouve cette fiche ?
+
+Elle se trouve dans trEMBL. Ceci veut dire qu'il ne s'agit pas d'une entrée examinée et validée par des contribueurs de Swiss-Prot. Ce correspond à une entrée seulement traitée par le système. 
+
+__1.2__ À quelle protéine correspond-elle ? De quel organisme ?
+
+Sur le site UniProt, la protéine n'est référencée que par son rôle de régulateur transcriptionnel. L'organisme d'origine de la protéine est le _Streptococcus thermophilus_. Lors de l'exercice précédent nous avions déjà trouvé des homologues __ComR__ chez les _streptococci_. Sur PDBe nous la trouvons directement comme __ComR__.
+
+__1.3__ Quelle est la longueur de sa séquence ? Combien de structures 3D de la protéine ont été résolues ?
+
+La longueur de sa séquence est de 310 aa. Nous observons trois structures différentes, notamment :
+
+* 5JUB, dont on connaît la composition dès l'exercice de la deuxième séance: Chaînes A et B de la forme dimérique __ComR__, avec les chaînes C et D (peptides signaux __ComS__), dg l'ADN associé.
+* 5JUF, qui est l'apoprotéine (forme inactive) de la __ComR__.
+* 5QER, une autre forme apo de la protéine.
+
+__1.4__ Combien de domaines  sont identifiés par InterPro ? Donnez-en les bornes (résidus X à Y).
+
+InterPro identifie quatre domaines dans la protéine __ComR__.
+Ce sont :
+
+* Cro-C1-type helix-turn-helix domain (résidus G8 à L66)
+* Lambda repressor-like, DNA-binding domain superfamily (résidus N2 à A296)
+* Tetratricopeptide-like helical domain superfamily (résidus L3 à A296)
+* ComR, tetratricopeptide (résidus P75 à A292)
+
+__1.5.__ Pendant une recherche BLAST, quel est le paramétrage par défaut de BLASTP ?
+
+
+
 ```{r imports, message=FALSE, warning=FALSE, tidy=TRUE}
 library(msa) # Paquet pour faire alignements multiples
 library(aphid) # Paquet contenant les matrices de substitution
+library(ggplot2) # Paquet pour la création de graphiques
+library(foreach) # Paquet pour itérations
 data("substitution") # Substitution matrices
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-```{r libraries}
-#library(BSgenome.Scerevisiae.UCSC.sacCer3)
-#c("backports", "cpp11", "dbplyr", "future", "lava", "renv")
-```
-
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
 ```{r import.data, message=FALSE, warning=FALSE, tidy=TRUE}
 filepath <- "../data/struct/seqComRDelta-Blast.fasta"
-mySeqs <- readAAStringSet(filepath, format = "fasta")
+mySeqs <- Biostrings::readAAStringSet(filepath, format = "fasta")
 ```
 
-```{r susbs}
-names(substitution)
+Ici nous pouvons voir quelques-unes des matrices de substitution d'acides aminés
+disponibles dans le paquet `aphid`. Ce sont des matrices de substitution 
+[publiées par le NCBI](ftp://ftp.ncbi.nih.gov/blast/matrices/).
+```{r subs, message=FALSE, warning=FALSE}
+head(t(matrix(names(substitution), ncol=7, byrow=T)), 6)[2:6,1:6]
 ```
 ## Including Plots
 
-You can also embed plots, for example:
- msaClustalW(inputSeqs, cluster="default", gapOpening="default", 
-                gapExtension="default", maxiters="default", 
-                substitutionMatrix="default", type="default", 
-                order=c("aligned", "input"), verbose=FALSE,
-                help=FALSE, ...)
 
-```{r pressure, echo=FALSE, message=FALSE, warning=FALSE, tidy=TRUE}
-library(doParallel)
-library(foreach)
-
+```{r function.def, echo=FALSE, message=FALSE, warning=FALSE, tidy=TRUE}
 f.algin.score <- function(seqs, go, ge, subm, gapval){ 
   # Compute score
   sum(
@@ -67,60 +94,22 @@ f.algin.score <- function(seqs, go, ge, subm, gapval){
   )
 }
 
-parallel.search <- function(
-  filepath, subm, gapval, 
-  go = seq(5, 15, 1), ge = seq(0.1, 1.5, 0.05), 
-  nthreads=(detectCores()/2)
+linear.search <- function(
+  seqs, subm, gapval,
+  go = seq(5, 15, 1), # interval for gap Opening penalties
+  ge = seq(0.1, 1.5, 0.05) # ibidem for gap extension 
 ){
-  cl <- parallel::makeCluster(nthreads, type = "FORK")
-  doParallel::registerDoParallel(cl)
-  
-  #nreps <- length(ge) * length(go)
-  #i.seqs <- iter(replicate(nreps, seqs, simplify = FALSE))
-  grid.eval <- foreach(g_op = go, .combine = rbind) %dopar% {
-    foreach(g_ext = ge, .combine = rbind) %dopar% {
-      it.algn.score <- f.algin.score(
-        filepath, g_op, g_ext, subm, gapval
-      )
-      data.frame(gop = g_op, gext = g_ext)
-    }
-  }
-  stopCluster(cl) 
-  return(grid.eval)
-}
-
-linear.search <- function(seqs, subm, gapval){
-  retval <- foreach(g_op = seq(5, 15, 1), .combine = rbind) %do% {
-    foreach(g_ext = seq(0.1, 1.5, 0.05), .combine = rbind) %do% {
+  retval <- foreach(g_op = go, .combine = rbind) %do% {
+    foreach(g_ext = ge, .combine = rbind) %do% {
       it.algn.score <- f.algin.score(seqs, g_op, g_ext, subm, gapval)
       data.frame(gop = g_op, gext = g_ext, score = it.algn.score)
     }
   }
   return(retval)
 }
-```
 
-```{r auxilio}
-#my.pam <- parallel.search(filepath, substitution$PAM150, 0)
-```
-
-```{r aber, message=FALSE, warning=FALSE, tidy=TRUE, cache=TRUE, results="hide"}
-my.pam <- linear.search(mySeqs, substitution$PAM150, 0)
-my.blos <- linear.search(mySeqs, substitution$BLOSUM60, 0)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-```{r optimal}
-linmax <- function(x){ x[x$score == max(x$score), ] }
-```
-
-```{r what, message=FALSE, warning=FALSE, tidy=TRUE, cache=TRUE, results="hide"}
-gonnet <- linear.search(seqs = mySeqs, subm = substitution$IDENTITY, gapval = 0)
-```
-
-```{r plot}
-library(ggplot2)
+lin.max <- function(x){ x[x$score == max(x$score), ] }
+lin.min <- function(x){ x[x$score == min(x$score), ] }
 
 plot.align.search <- function(the.table, ttl="GridSearch"){
   gap.Open <- factor(the.table$gop)
@@ -130,16 +119,32 @@ plot.align.search <- function(the.table, ttl="GridSearch"){
 }
 ```
 
+
+```{r lin.grid.search, message=FALSE, warning=FALSE, tidy=TRUE, cache=TRUE, results="hide"}
+my.pam <- linear.search(mySeqs, substitution$PAM150, 0)
+my.blos <- linear.search(mySeqs, substitution$BLOSUM60, 0)
+my.id <- linear.search(seqs = mySeqs, subm = substitution$IDENTITY, gapval = 0)
+```
+
+
 ## Blossum 
 ```{r blossum}
-plot.align.search(my.blos, "woo")
-linmax(my.blos)
+plot.align.search(my.blos, "BLOSSUM GridSeach")
+head(lin.max(my.blos), 2)
+head(lin.min(my.blos), 2)
 ```
 
 ## PAM
 ```{r pam}
-plot.align.search(my.pam)
-linmax(my.pam)
+plot.align.search(my.pam, "PAM GridSearch")
+head(lin.max(my.pam), 2)
+head(lin.min(my.pam), 2)
 ```
 
+## PAM
+```{r id}
+plot.align.search(my.id, "ID GridSearch")
+head(lin.max(my.id), 2)
+head(lin.min(my.id), 2)
+```
 
