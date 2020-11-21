@@ -1,11 +1,29 @@
 
+# Julia
+Julia-seq/export-pdf
+
+
+# Python
+__pycache__
+__pycache__/*
+__pycache__/*.pyc
+# Module developed for another project, 
+# should not be tracked :
+Python/annotathon
+
 # Credentials, including my NCBI API:
 creds
 creds/*
 creds/*.toml
 
+# Data, i.e. sequence files.
+data
+
 # Renv :
 renv/
+
+# Rmarkdown cache :
+*_files
 
 # Docs (if they're ignored they might 
 #       not belong to me or be private )
