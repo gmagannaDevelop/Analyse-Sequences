@@ -1,4 +1,7 @@
 
+# vim swap files
+.*.swp
+
 # Julia
 Julia-seq/export-pdf
 
@@ -22,8 +25,11 @@ data
 # Renv :
 renv/
 
-# Rmarkdown cache :
+# Rmarkdown cache and intermediate builds :
 *_files
+*_cache
+/R/src/**/*.pdf
+/R/src/**/*.html
 
 # Docs (if they're ignored they might 
 #       not belong to me or be private )
