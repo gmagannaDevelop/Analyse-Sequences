@@ -1,4 +1,4 @@
-# Analyse-Sequences
+# BioGenesis
 
 This README will contain at least a section in English (main)
 and another in French.
@@ -8,6 +8,16 @@ and another in French.
 This project is of academic scope and individually mantained. It may not follow best practices or suit your particular purpose of use. Therefore use it at your own risk.
 
 If it were helpful in any way, please let me know! If you would like to contribute to it, hit me up (**PR welcome!**).
+
+## So, what does it do, excatly ?
+
+A lot of things? None of them? 
+
+This project has radically changed. At first I thought it would be a good idea to explore the tools related to my "analyse de séquences" introductory course. Afterwards I found out that other courses of my first semester were closely related (what a surprise huh? Bioinformatics lectures are related? Who would have thougt!) I decided to use it as a centralised repository for various things, all bioinformatics related.
+
+I should probably remove or modify the table of contents, given that it is no longer true. Note that each course will probably have its own branch. This seems to be the most sensible approach, for now.
+
+
 
 ## English
 
